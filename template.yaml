@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  origo-organization-lambda
+
+  Sample SAM Template for origo-organization-lambda
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  SlackNotificationFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: slack_notifications/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - arm64
+      Events:
+        SlackNotification:
+          Type: EventBridge # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Pattern:
+              source:
+                - "aws.events"
+              detail-type:
+                  - "EventBridge-Notify-Root-Login-RootActivityRule"
+              EventBusName: default
+              Rules: EventBridge-Notify-Root-Login-RootActivityRule
+
