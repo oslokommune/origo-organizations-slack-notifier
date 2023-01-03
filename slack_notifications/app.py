@@ -25,6 +25,7 @@ def lambda_handler(event, context):
     except KeyError:
         logger.error("Event does not contain Records")
         event_bridge_message = event
+        return "Error"
 
     logger.info("Event Bridge Message: {}".format(event_bridge_message))
 
@@ -95,10 +96,14 @@ def lambda_handler(event, context):
     try:
         request = requests.post(SLACK_WEBHOOK_URL, json=slack_message)
         request.raise_for_status()
-
-        logging.info(f"Slack response: {request.text}")
-        return "Success"
-
-    except requests.exceptions.HTTPError as err:
-        logging.error(f"Error sending message to Slack: {err}")
+    except requests.exceptions.RequestException:
+        logging.error(f"Error sending message to Slack")
         return "Error"
+    except Exception as err:
+        logging.exception(f"Unexpected error: {err}")
+        return "Error"
+
+    return "Success"
+
+
+
