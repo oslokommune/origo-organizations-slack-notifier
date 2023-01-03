@@ -24,10 +24,22 @@ This application requires the following:
 * AWS EventBridge Rule (https://docs.aws.amazon.com/eventbridge/latest/userguide/create-eventbridge-rule.html)
 
 ## Configure the application
-Set an environment variable for the Slack Webhook URL. This is used to send the message to Slack.
+Set an environment variable for the Slack Webhook URL. This is used to send the message to Slack. When testing locally you can set it using:
+
 ```bash
 export SLACK_WEBHOOK_URL=<your-slack-webhook-url>
 ```
+
+When deploying to AWS you can set it using the AWS Lambda Console or as part of the template.yaml file.
+
+```bash
+Globals:
+  Function:
+    Environment:
+      Variables:
+        SLACK_WEBHOOK_URL: <your-slack-webhook-url>
+```
+
 
 ## EventBridge Rule
 You need an EventBridge rule that can trigger the Lambda function. You can configure the trigger in Lambda or in EventBridge.
